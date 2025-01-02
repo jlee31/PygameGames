@@ -1,0 +1,1 @@
+Opponent((self.allSprites, self.paddleSprite), self.ball)
