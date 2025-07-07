@@ -8,8 +8,8 @@ class Player(pygame.sprite.Sprite):
         super().__init__(group);
 
         self.importAssets()
-
         self.status = 'down_idle'
+        
         self.frameIndex = 0
 
 
@@ -27,7 +27,8 @@ class Player(pygame.sprite.Sprite):
 
     def importAssets(self):
         self.animations = {'up': [],'down': [],'left': [],'right': [],
-						   'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[],
+                            'up_idle': [],'down_idle': [],'left_idle': [],'right_idle': [],
+						   'right_hoe':[],'left_hoe':[],'up_hoe':[],'down_hoe':[],
 						   'right_hoe':[],'left_hoe':[],'up_hoe':[],'down_hoe':[],
 						   'right_axe':[],'left_axe':[],'up_axe':[],'down_axe':[],
 						   'right_water':[],'left_water':[],'up_water':[],'down_water':[]}
@@ -43,18 +44,33 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_UP]:
             self.direction.y = -1
+            self.status = 'up'
         elif keys[pygame.K_DOWN]:
             self.direction.y = 1
+            self.status = 'down'
         else:
             self.direction.y = 0
 
         if keys[pygame.K_LEFT]:
             self.direction.x = -1
+            self.status = 'right'
         elif keys[pygame.K_RIGHT]:
             self.direction.x = 1
+            self.status = 'left'
         else:
             self.direction.x = 0
 
+    def getStatus(self):
+        # if player is idle, add idle to status
+        if self.direction.magnitude() == 0:
+            self.status = self.status.split('_')[0] + '_idle'
+
+    def animate(self, dt):
+        self.frameIndex += 4 * dt;
+        if self.frameIndex >= len(self.animations[self.status]):
+            self.frameIndex = 0;
+        self.image = self.animations[self.status][int(self.frameIndex)]
+    
     def move(self, dt):
         if (self.direction.magnitude() > 0):
             self.direction = self.direction.normalize()
@@ -67,4 +83,6 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.input()
+        self.getStatus()
         self.move(dt)
+        self.animate(dt);
