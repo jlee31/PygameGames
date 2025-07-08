@@ -65,6 +65,8 @@ class Player(pygame.sprite.Sprite):
         if self.direction.magnitude() == 0:
             self.status = self.status.split('_')[0] + '_idle'
 
+        # if player is using some sort of tool, add tooluse to status
+
     def animate(self, dt):
         self.frameIndex += 4 * dt;
         if self.frameIndex >= len(self.animations[self.status]):
