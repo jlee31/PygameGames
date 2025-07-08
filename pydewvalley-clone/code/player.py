@@ -1,18 +1,16 @@
 import pygame
 from settings import *
 from support import *
-
+from debug import debug
+from myTimer import Timer
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group);
 
         self.importAssets()
-        self.status = 'down_idle'
-        
+        self.status = 'down_idle'        
         self.frameIndex = 0
-
-
 
         # Player Model
 
@@ -24,41 +22,55 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2()
         self.position = pygame.math.Vector2(self.rect.center)
         self.speed = 200;  
+    
+        # tools
+        self.selectedTool = 'axe'
 
+        # timer
+        self.timers = {
+            'tool use': Timer(350, self.useTool)
+        }
+    
     def importAssets(self):
         self.animations = {'up': [],'down': [],'left': [],'right': [],
                             'up_idle': [],'down_idle': [],'left_idle': [],'right_idle': [],
-						   'right_hoe':[],'left_hoe':[],'up_hoe':[],'down_hoe':[],
-						   'right_hoe':[],'left_hoe':[],'up_hoe':[],'down_hoe':[],
-						   'right_axe':[],'left_axe':[],'up_axe':[],'down_axe':[],
+						   'right_hoe':[],'left_hoe':[],'up_hoe':[],'down_hoe':[], 'right_axe':[],'left_axe':[],'up_axe':[],'down_axe':[],
 						   'right_water':[],'left_water':[],'up_water':[],'down_water':[]}
         
         for animation in self.animations.keys():
             fullPath = '../graphics/character/' + animation
             self.animations[animation] = importFolder(fullPath)
 
-        print(self.animations)
+        # print(self.animations)
 
     def input(self):
         keys = pygame.key.get_pressed();
+        if not self.timers['tool use'].active:
+            # Movement Direction
+            if keys[pygame.K_UP]:
+                self.direction.y = -1
+                self.status = 'up'
+            elif keys[pygame.K_DOWN]:
+                self.direction.y = 1
+                self.status = 'down'
+            else:
+                self.direction.y = 0
 
-        if keys[pygame.K_UP]:
-            self.direction.y = -1
-            self.status = 'up'
-        elif keys[pygame.K_DOWN]:
-            self.direction.y = 1
-            self.status = 'down'
-        else:
-            self.direction.y = 0
+            if keys[pygame.K_LEFT]:
+                self.direction.x = -1
+                self.status = 'left'
+            elif keys[pygame.K_RIGHT]:
+                self.direction.x = 1
+                self.status = 'right'
+            else:
+                self.direction.x = 0
 
-        if keys[pygame.K_LEFT]:
-            self.direction.x = -1
-            self.status = 'left'
-        elif keys[pygame.K_RIGHT]:
-            self.direction.x = 1
-            self.status = 'right'
-        else:
-            self.direction.x = 0
+            # Tool Use
+
+            if keys[pygame.K_SPACE]:
+                # timer for the tool use
+                self.timers['tool use'].activate()
+                self.direction = pygame.math.Vector2()
 
     def getStatus(self):
         # if player is idle, add idle to status
@@ -66,13 +78,9 @@ class Player(pygame.sprite.Sprite):
             self.status = self.status.split('_')[0] + '_idle'
 
         # if player is using some sort of tool, add tooluse to status
+        if self.timers['tool use'].active:
+            self.status = self.status.split('_')[0] + '_axe'
 
-    def animate(self, dt):
-        self.frameIndex += 4 * dt;
-        if self.frameIndex >= len(self.animations[self.status]):
-            self.frameIndex = 0;
-        self.image = self.animations[self.status][int(self.frameIndex)]
-    
     def move(self, dt):
         if (self.direction.magnitude() > 0):
             self.direction = self.direction.normalize()
@@ -83,8 +91,23 @@ class Player(pygame.sprite.Sprite):
         self.position.y += self.direction.y * self.speed * dt
         self.rect.y = self.position.y
 
+    def animate(self, dt):
+        self.frameIndex += 4 * dt;
+        if self.frameIndex >= len(self.animations[self.status]):
+            self.frameIndex = 0;
+        self.image = self.animations[self.status][int(self.frameIndex)]
+
+    def updateTimers(self):
+        for timer in self.timers.values():
+            timer.update()
+
+    def useTool(self):
+        print(self.selectedTool)
+
     def update(self, dt):
         self.input()
         self.getStatus()
+        self.updateTimers()
+
         self.move(dt)
         self.animate(dt);
