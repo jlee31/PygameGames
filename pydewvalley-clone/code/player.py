@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.importAssets()
         self.status = 'down_idle'        
         self.frameIndex = 0
+        self.z= LAYERS['main']
 
         # Player Model
 
