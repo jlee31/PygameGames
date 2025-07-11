@@ -39,9 +39,7 @@ class Level:
 		# setting up trees
 		for obj in tmxData.get_layer_by_name('Trees'):
 			Tree((obj.x, obj.y), obj.image, self.allSprites, obj.name)
-		# setting up flowers
-		for obj in tmxData.get_layer_by_name('Decoration'):
-			Wildflower((obj.x, obj.y), obj.image, self.allSprites)
+		
 
 
 		# Setting up the image
