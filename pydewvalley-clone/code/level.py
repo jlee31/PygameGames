@@ -3,6 +3,7 @@ from settings import *
 from player import Player
 from overlay import Overlay
 from sprites import Generic
+from pytmx.util_pygame import load_pygame
 
 class Level:
 	def __init__(self):
@@ -17,9 +18,29 @@ class Level:
 		self.Overlay = Overlay(self.player)
 
 	def setup(self):
+		# setting up actual map
+		tmxData = load_pygame('../data/map.tmx')
+		# house
+		for layer in ['HouseFloor', 'HouseFurnitureBottom']:
+			for x,y,surf in tmxData.get_layer_by_name(layer).tiles():
+				Generic(pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surf, groups=self.allSprites, z=LAYERS['house bottom'])
+		for layer in ['HouseWalls', 'HouseFurnitureTop']:
+			for x,y,surf in tmxData.get_layer_by_name(layer).tiles():
+				Generic(pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surf, groups=self.allSprites, z=LAYERS['main'])
+		for x,y,surf in tmxData.get_layer_by_name('Fence').tiles():
+			Generic(pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surf, groups=self.allSprites, z=LAYERS['main'])
+
+		# setting up water
+	
+		# setting up trees
+
+		# setting up flowers
+
+
+
 		# Setting up the image
 		Generic(pos = (0,0), surf = pygame.image.load('../graphics/world/ground.png').convert_alpha(), groups = self.allSprites, z = LAYERS['ground'])
-		self.player = Player((100, 100), self.allSprites)
+		self.player = Player((1000, 1000), self.allSprites)
 
 	def run(self,dt): 
 		self.display_surface.fill('black')
