@@ -19,6 +19,12 @@ class Player(pygame.sprite.Sprite):
         
         self.rect = self.image.get_rect(center = pos)
 
+        # Setting up Collisions
+
+        self.hitbox = self.rect.copy().inflate(-126, -70)
+        # inflate takes the rectangle and keeping the dimension while staying centered
+
+
         # Movement Attributes
         self.direction = pygame.math.Vector2()
         self.position = pygame.math.Vector2(self.rect.center)
@@ -123,11 +129,24 @@ class Player(pygame.sprite.Sprite):
         if (self.direction.magnitude() > 0):
             self.direction = self.direction.normalize()
 
-
+        # Horizontal movement 
+        ''' Old Movement
         self.position.x += self.direction.x * self.speed * dt
-        self.rect.x = self.position.x
+        self.rect.centerxx = self.position.x
+        '''
+        
+        self.position.x += self.direction.x * self.speed * dt
+        self.hitbox.centerx = round(self.position.x)
+        self.rect.centerx = self.hitbox.centerx
+        
+        # Vertical movement
+        ''' Old Movement 
         self.position.y += self.direction.y * self.speed * dt
-        self.rect.y = self.position.y
+        self.rect.centery = self.position.y
+        '''
+        self.position.y += self.direction.y * self.speed * dt
+        self.hitbox.centery = round(self.position.y)
+        self.rect.centery = self.hitbox.centery
 
     def animate(self, dt):
         self.frameIndex += 4 * dt;

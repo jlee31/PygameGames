@@ -14,6 +14,7 @@ class Level:
 
 		# sprite groups
 		self.allSprites = CameraGroup()
+		self.collisionSprites = pygame.sprite.Group()
 
 		self.setup()
 		self.Overlay = Overlay(self.player)
@@ -42,7 +43,7 @@ class Level:
 		
 		# setting up flowers
 		for obj in tmxData.get_layer_by_name('Decoration'):
-			Wildflower((obj.x, obj.y), obj.image, self.allSprites)
+			Wildflower((obj.x, obj.y), obj.image, self.allSprites)	
 
 		# Setting up the image
 		Generic(pos = (0,0), surf = pygame.image.load('../graphics/world/ground.png').convert_alpha(), groups = self.allSprites, z = LAYERS['ground'])
