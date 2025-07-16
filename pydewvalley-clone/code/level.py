@@ -22,6 +22,7 @@ class Level:
 	def setup(self):
 		# setting up actual map
 		tmxData = load_pygame('../data/map.tmx')
+
 		# house
 		for layer in ['HouseFloor', 'HouseFurnitureBottom']:
 			for x,y,surf in tmxData.get_layer_by_name(layer).tiles():
@@ -29,8 +30,10 @@ class Level:
 		for layer in ['HouseWalls', 'HouseFurnitureTop']:
 			for x,y,surf in tmxData.get_layer_by_name(layer).tiles():
 				Generic(pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surf, groups=self.allSprites, z=LAYERS['main'])
+
+		# Fence
 		for x,y,surf in tmxData.get_layer_by_name('Fence').tiles():
-			Generic(pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surf, groups=self.allSprites, z=LAYERS['main'])
+			Generic(pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surf, groups=[self.allSprites, self.collisionSprites], z=LAYERS['main'])
 
 		# setting up water
 		waterFrames = importFolder('../graphics/water')
@@ -39,15 +42,21 @@ class Level:
 		
 		# setting up trees
 		for obj in tmxData.get_layer_by_name('Trees'):
-			Tree((obj.x, obj.y), obj.image, self.allSprites, obj.name)
+			Tree((obj.x, obj.y), obj.image, [self.allSprites, self.collisionSprites], obj.name)
 		
 		# setting up flowers
 		for obj in tmxData.get_layer_by_name('Decoration'):
-			Wildflower((obj.x, obj.y), obj.image, self.allSprites)	
+			Wildflower((obj.x, obj.y), obj.image, [self.allSprites, self.collisionSprites])	
 
 		# Setting up the image
 		Generic(pos = (0,0), surf = pygame.image.load('../graphics/world/ground.png').convert_alpha(), groups = self.allSprites, z = LAYERS['ground'])
-		self.player = Player((1000, 1000), self.allSprites)
+
+		# collision tiles
+		for x, y, surf in tmxData.get_layer_by_name('Collision').tiles(): 
+			Generic((x * TILE_SIZE, y * TILE_SIZE), pygame.Surface((TILE_SIZE, TILE_SIZE)), self.collisionSprites)
+
+		# Creating instance of the player here
+		self.player = Player((1000, 1000), self.allSprites, self.collisionSprites)
 
 	def run(self,dt): 
 		self.display_surface.fill('black')
