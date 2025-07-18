@@ -8,3 +8,4 @@ def debug(info, x=10, y=10):
     debug_surf = font.render(str(info), True, 'white')
     debug_rect = debug_surf.get_rect(topleft = (x, y))
     display_surf.blit(debug_surf, debug_rect)
+

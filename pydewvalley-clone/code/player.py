@@ -5,7 +5,7 @@ from debug import debug
 from myTimer import Timer
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group, collisionSprites):
+    def __init__(self, pos, group, collisionSprites, treeSprites):
         super().__init__(group);
 
         self.importAssets()
@@ -52,6 +52,12 @@ class Player(pygame.sprite.Sprite):
             'seed use': Timer(350, self.useSeed),
             'seed switch': Timer(200)
         }
+
+        # interactions
+        self.treeSprites = treeSprites
+
+    def getTargetPosition(self):
+        self.targetPosition = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
     
     def importAssets(self):
         self.animations = {'up': [],'down': [],'left': [],'right': [],
@@ -127,7 +133,7 @@ class Player(pygame.sprite.Sprite):
 
         # if player is using some sort of tool, add tooluse to status
         if self.timers['tool use'].active:
-            self.status = self.status.split('_')[0] + '_axe'
+            self.status = self.status.split('_')[0] + '_' + self.selectedTool
 
     def collision(self, direction):
         for sprite in self.collisionSprites.sprites():
@@ -151,7 +157,6 @@ class Player(pygame.sprite.Sprite):
                     self.rect.centery = self.hitbox.centery
                     self.position.y = self.hitbox.centery
 
-        
     def move(self, dt):
         if (self.direction.magnitude() > 0):
             self.direction = self.direction.normalize()
@@ -189,6 +194,23 @@ class Player(pygame.sprite.Sprite):
 
     def useTool(self):
         debug(self.selectedTool)
+        # Calculate target position when tool is used
+        self.getTargetPosition()
+        if self.selectedTool == 'hoe':
+            pass
+        if self.selectedTool == 'axe':
+            print(f"Axe used at target position: {self.targetPosition}")
+            print(f"Number of trees in treeSprites: {len(self.treeSprites.sprites())}")
+            for tree in self.treeSprites.sprites():
+                print(f"Checking tree at {tree.rect.center} with {len(tree.appleSprites.sprites())} apples")
+                if tree.rect.collidepoint(self.targetPosition):
+                    print(f"Tree hit! Apples before: {len(tree.appleSprites.sprites())}")
+                    tree.damage()
+                    print(f"Apples after: {len(tree.appleSprites.sprites())}")
+                else:
+                    print("Tree not hit - no collision")
+        if self.selectedTool == 'water':
+            pass
 
     def useSeed(self):
         debug(self.selectedSeed, 10, 30)
@@ -197,6 +219,7 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.getStatus()
         self.updateTimers()
+        self.getTargetPosition()
 
         self.move(dt)
         self.animate(dt);
