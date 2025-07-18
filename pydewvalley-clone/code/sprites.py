@@ -39,7 +39,7 @@ class Wildflower(Generic):
         self.hitbox = self.rect.copy().inflate(-20, -self.rect.height * 0.9)
 
 class Tree(Generic):
-    def __init__(self, pos, surf, groups, names):
+    def __init__(self, pos, surf, groups, names, playerAdd):
         super().__init__(pos, surf, groups, z=LAYERS['main'])
 
         # tree attributes
@@ -47,12 +47,15 @@ class Tree(Generic):
         self.alive = True
         self.stumpSurface = pygame.image.load(f'../graphics/stumps/{"small" if names == "Small" else "large"}.png').convert_alpha()
         self.invulTimer = Timer(200)
+        
 
         # apple
         self.appleSurf = pygame.image.load('../graphics/fruit/apple.png') 
         self.applePos = APPLE_POS[names]
         self.appleSprites = pygame.sprite.Group()
         self.createApple()
+
+        self.playerAdd = playerAdd
     
     def createApple(self):
         for pos in self.applePos:
@@ -75,17 +78,19 @@ class Tree(Generic):
                       surf= randomApple.image,
                     groups= self.groups()[0],
                     z= LAYERS['fruit'])
-            
+            self.playerAdd('apple')
             print(f"Apple removed! Remaining apples: {len(self.appleSprites.sprites())}")
         else:
             print("No apples to remove!")
 
     def checkDeath(self):
         if self.health <= 0:
+            Particle(pos=self.rect.topleft, surf=self.image, groups=self.groups()[0], z=LAYERS['fruit'], duration=500)
             self.image = self.stumpSurface
             self.rect = self.image.get_rect(midbottom = self.rect.midbottom)
             self.hitbox = self.rect.copy().inflate(-10, -self.rect.height * 0.6)
             self.alive = False
+            self.playerAdd('wood')
 
         
     def update(self, dt):

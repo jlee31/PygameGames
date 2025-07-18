@@ -43,7 +43,7 @@ class Level:
 		
 		# setting up trees
 		for obj in tmxData.get_layer_by_name('Trees'):
-			Tree((obj.x, obj.y), obj.image, [self.allSprites, self.collisionSprites, self.treeSprites], obj.name)
+			Tree((obj.x, obj.y), obj.image, [self.allSprites, self.collisionSprites, self.treeSprites], obj.name, self.playerAdd)
 		print(f"Created {len(self.treeSprites.sprites())} trees")
 		
 		# setting up flowers
@@ -60,6 +60,9 @@ class Level:
 		# Creating instance of the player here
 		self.player = Player((1000, 1000), self.allSprites, self.collisionSprites, treeSprites=self.treeSprites)
 
+	def playerAdd(self, item):
+		self.player.itemInventory[item] += 1
+
 	def run(self,dt): 
 		self.display_surface.fill('black')
 		# self.allSprites.draw(self.display_surface)
@@ -67,6 +70,8 @@ class Level:
 		self.allSprites.update(dt)
 
 		self.Overlay.display()
+
+		
 
 class CameraGroup(pygame.sprite.Group):
 	def __init__(self):

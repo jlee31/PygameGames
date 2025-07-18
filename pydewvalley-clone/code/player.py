@@ -45,6 +45,15 @@ class Player(pygame.sprite.Sprite):
         self.seedIndex = 0
         self.selectedSeed = self.seeds[self.seedIndex]
 
+        # inventory
+
+        self.itemInventory = {
+            'wood': 0,
+            'apple': 0,
+            'corn': 0,
+            'tomato': 0
+        }
+
         # timer
         self.timers = {
             'tool use': Timer(350, self.useTool),
@@ -200,7 +209,6 @@ class Player(pygame.sprite.Sprite):
             pass
         if self.selectedTool == 'axe':
             print(f"Axe used at target position: {self.targetPosition}")
-            print(f"Number of trees in treeSprites: {len(self.treeSprites.sprites())}")
             for tree in self.treeSprites.sprites():
                 print(f"Checking tree at {tree.rect.center} with {len(tree.appleSprites.sprites())} apples")
                 if tree.rect.collidepoint(self.targetPosition):
