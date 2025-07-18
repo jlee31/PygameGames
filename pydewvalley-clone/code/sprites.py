@@ -1,4 +1,5 @@
 import pygame 
+from settings import LAYERS
 from settings import *
 from random import randint, choice
 from myTimer import Timer
@@ -70,6 +71,11 @@ class Tree(Generic):
         if len(self.appleSprites.sprites()) > 0:
             randomApple = choice(self.appleSprites.sprites())
             randomApple.kill()
+            Particle( pos= randomApple.rect.topleft,
+                      surf= randomApple.image,
+                    groups= self.groups()[0],
+                    z= LAYERS['fruit'])
+            
             print(f"Apple removed! Remaining apples: {len(self.appleSprites.sprites())}")
         else:
             print("No apples to remove!")
@@ -84,5 +90,22 @@ class Tree(Generic):
         
     def update(self, dt):
         if self.alive: self.checkDeath()
+
+class Particle(Generic):
+    def __init__(self, pos, surf, groups, z, duration = 200):
+        super().__init__(pos, surf, groups, z)
+        self.startTime = pygame.time.get_ticks()
+        self.duration = duration
+
+        # white surface
+        maskSurface = pygame.mask.from_surface(self.image)
+        newSurface = maskSurface.to_surface()
+        newSurface.set_colorkey((0,0,0))
+        self.image = newSurface
+    
+    def update(self, dt):
+        currentTime = pygame.time.get_ticks()
+        if currentTime - self.startTime > self.duration:
+            self.kill()
 
     
