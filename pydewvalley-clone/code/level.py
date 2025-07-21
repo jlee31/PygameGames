@@ -6,6 +6,7 @@ from sprites import Generic, Water, Wildflower, Tree, Interaction
 from pytmx.util_pygame import load_pygame
 from support import *
 from transition import Transition
+from soil import SoilLayer
 
 class Level:
 	def __init__(self):
@@ -19,8 +20,16 @@ class Level:
 		self.treeSprites = pygame.sprite.Group()
 		self.interactionSprites = pygame.sprite.Group()
 
+
+		self.soilLayer = SoilLayer(self.allSprites)
 		self.setup()
 		self.Overlay = Overlay(self.player)
+
+		# missing transition??
+
+		
+
+
 
 	def setup(self):
 		# setting up actual map
@@ -64,7 +73,7 @@ class Level:
 
 		for obj in tmxData.get_layer_by_name('Player'):
 			if obj.name == 'Start':
-				self.player = Player((obj.x, obj.y), self.allSprites, self.collisionSprites, self.treeSprites, self.interactionSprites)
+				self.player = Player((obj.x, obj.y), self.allSprites, self.collisionSprites, self.treeSprites, self.interactionSprites, self.soilLayer)
 			if obj.name == 'Bed':
 				Interaction((obj.x, obj.y), (obj.width, obj.height), self.interactionSprites, 'Bed')
 
@@ -90,8 +99,6 @@ class Level:
 
 		if self.player.sleep:
 			self.transition.play()
-
-		
 
 class CameraGroup(pygame.sprite.Group):
 	def __init__(self):

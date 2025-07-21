@@ -5,7 +5,7 @@ from debug import debug
 from myTimer import Timer
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group, collisionSprites, treeSprites, interaction):
+    def __init__(self, pos, group, collisionSprites, treeSprites, interaction, soilLayer):
         super().__init__(group);
 
         self.importAssets()
@@ -68,6 +68,7 @@ class Player(pygame.sprite.Sprite):
         self.treeSprites = treeSprites
         self.interaction = interaction
         self.sleep = False
+        self.soilLayer = soilLayer
 
     def getTargetPosition(self):
         self.targetPosition = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
@@ -220,7 +221,8 @@ class Player(pygame.sprite.Sprite):
         # Calculate target position when tool is used
         self.getTargetPosition()
         if self.selectedTool == 'hoe':
-            pass
+            self.soilLayer.getHit(self.targetPosition)
+
         if self.selectedTool == 'axe':
             print(f"Axe used at target position: {self.targetPosition}")
             for tree in self.treeSprites.sprites():
