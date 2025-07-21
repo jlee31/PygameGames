@@ -2,6 +2,13 @@ import pygame
 from settings import *
 from pytmx.util_pygame import load_pygame
 
+class SoilTile(pygame.sprite.Sprite):
+    def __init__(self , pos, surf, groups):
+        super().__init__(groups)
+        self.image = surf
+        self.rect = self.image.get_rect(topleft = pos)
+        self.z = LAYERS['soil']
+
 class SoilLayer:
     def __init__(self, allSprites):
         # sprite groups
@@ -31,8 +38,6 @@ class SoilLayer:
             self.grid[y][x].append('F')
         # print(self.grid)
 
-
-
     def createHitRects(self):
         self.hitRects = []
         for index_row, row in enumerate(self.grid):
@@ -52,3 +57,13 @@ class SoilLayer:
 
                 if 'F' in self.grid[y][x]:
                     # print('FARMABLE')
+                    self.grid[x][y].append('X') # X means soil Patch
+                    self.createSoilTiles()
+
+    def createSoilTiles(self):
+        print("Created a soil tile")
+        self.soilSprites.empty() # getting rid of existing soil tiles
+        for index_row, row in enumerate(self.grid):
+            for index_column, cell in enumerate(row):
+                if 'X' in cell:
+                    SoilTile((TILE_SIZE * index_row, TILE_SIZE * index_column), self.soilSurface, [self.allSprites, self.soilSprites])
