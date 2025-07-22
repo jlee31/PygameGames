@@ -60,20 +60,20 @@ class SoilLayer:
 
                 if 'F' in self.grid[y][x]:
                     # print('FARMABLE')
-                    self.grid[x][y].append('X') # X means soil Patch
+                    self.grid[y][x].append('X') # X means soil Patch
                     self.createSoilTiles()
 
     def createSoilTiles(self):
         print("Created a soil tile")
         self.soilSprites.empty() # getting rid of existing soil tiles
-        for index_row, row in enumerate(self.grid):
-            for index_column, cell in enumerate(row):
+        for row_idx, row in enumerate(self.grid):
+            for col_idx, cell in enumerate(row):
                 if 'X' in cell:
-                    # TILE options
-                    top = 'X' in self.grid[index_row - 1][index_column]
-                    right = 'X' in row[index_column + 1]
-                    left = 'X' in row[index_column - 1]
-                    bottom = 'X' in self.grid[index_row + 1][index_column]
+                    # Boundary checks
+                    top = row_idx > 0 and 'X' in self.grid[row_idx - 1][col_idx]
+                    bottom = row_idx < len(self.grid) - 1 and 'X' in self.grid[row_idx + 1][col_idx]
+                    left = col_idx > 0 and 'X' in row[col_idx - 1]
+                    right = col_idx < len(row) - 1 and 'X' in row[col_idx + 1]
 
                     tileType = 'o' # default tile
 
@@ -83,9 +83,41 @@ class SoilLayer:
 
                     # horizontal tiles
                     if left and not any((top, right, bottom)):
-                        
+                        tileType = 'r'
+                    if right and not any((top, left, bottom)):
+                        tileType = 'l'
+                    if right and left and not any((top, bottom)):
+                        tileType = 'lr'
 
+                    # vertical tiles
+                    if top and not any((right, left, bottom)):
+                        tileType = 'b'
+                    if bottom and not any((right, left, top)):
+                        tileType = 't'
+                    if top and bottom and not any((left, right)):
+                        tileType = 'tb'
 
-                    SoilTile((TILE_SIZE * index_row, TILE_SIZE * index_column), self.soilSurfaces[tileType], [self.allSprites, self.soilSprites])
+                    # corners
+                    if left and bottom and not any((top, right)):
+                        tileType = 'tr'
+                    if left and top and not any((bottom, right)):
+                        tileType = 'br'
+                    if right and bottom and not any((top, left)):
+                        tileType = 'tl'
+                    if right and top and not any((bottom, left)):
+                        tileType = 'bl'
+                    
+                    # t-shape pieces
+                    if top and bottom and left and not right:
+                        tileType = 'tbl'
+                    if top and bottom and right and not left:
+                        tileType = 'tbr'
+                    if left and right and top and not bottom:
+                        tileType = 'lrt'
+                    if left and right and bottom and not top:
+                        tileType = 'lrb'
+
+                    # Corrected tile placement
+                    SoilTile((TILE_SIZE * col_idx, TILE_SIZE * row_idx), self.soilSurfaces[tileType], [self.allSprites, self.soilSprites])
 
     
