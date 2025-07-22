@@ -1,4 +1,5 @@
 import pygame
+from support import *
 from settings import *
 from pytmx.util_pygame import load_pygame
 
@@ -14,9 +15,11 @@ class SoilLayer:
         # sprite groups
         self.allSprites = allSprites
         self.soilSprites = pygame.sprite.Group()
+        
 
         # graphics
         self.soilSurface = pygame.image.load('../graphics/soil/o.png')
+        self.soilSurfaces = importFolderDictionary('../graphics/soil/')
 
         # requirements
         self.createSoilGrid()
@@ -66,4 +69,23 @@ class SoilLayer:
         for index_row, row in enumerate(self.grid):
             for index_column, cell in enumerate(row):
                 if 'X' in cell:
-                    SoilTile((TILE_SIZE * index_row, TILE_SIZE * index_column), self.soilSurface, [self.allSprites, self.soilSprites])
+                    # TILE options
+                    top = 'X' in self.grid[index_row - 1][index_column]
+                    right = 'X' in row[index_column + 1]
+                    left = 'X' in row[index_column - 1]
+                    bottom = 'X' in self.grid[index_row + 1][index_column]
+
+                    tileType = 'o' # default tile
+
+                    # all sides
+                    if all((top, right, bottom, left)):
+                        tileType = 'x'
+
+                    # horizontal tiles
+                    if left and not any((top, right, bottom)):
+                        
+
+
+                    SoilTile((TILE_SIZE * index_row, TILE_SIZE * index_column), self.soilSurfaces[tileType], [self.allSprites, self.soilSprites])
+
+    

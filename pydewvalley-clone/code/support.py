@@ -13,3 +13,13 @@ def importFolder(path):
             surfaceList.append(imageSurf)
 
     return surfaceList
+
+def importFolderDictionary(path):
+    surfaceDict = {}
+    for folder,subfolder,imgFiles in walk(path):
+        for image in imgFiles:
+            # path + image to get full path
+            fullPath = path + '/' + image 
+            imageSurf =  pygame.image.load(fullPath).convert_alpha()
+            surfaceDict[image.split('.')[0]] = imageSurf
+    return surfaceDict
