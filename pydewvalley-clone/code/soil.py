@@ -142,4 +142,14 @@ class SoilLayer:
                 # create water sprite
                 surf = choice(self.waterSurface)
                 WaterTile((x * TILE_SIZE,y * TILE_SIZE), surf ,[self.allSprites, self.waterSprites])
+
+    def removeWater(self):
+        # destroy water sprites
+        for sprite in self.waterSprites.sprites():
+            sprite.kill()
+        # clean up the grid
+        for row in self.grid:
+            for cell in row:
+                if 'W' in cell:
+                    cell.remove('W')
                 

@@ -86,6 +86,9 @@ class Level:
 				apple.kill()
 			tree.createApple()
 
+		# soil
+		self.soilLayer.removeWater()
+
 	def playerAdd(self, item):
 		self.player.itemInventory[item] += 1
 
