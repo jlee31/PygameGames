@@ -2,6 +2,7 @@ import pygame
 from support import *
 from settings import *
 from pytmx.util_pygame import load_pygame
+from random import choice
 
 class SoilTile(pygame.sprite.Sprite):
     def __init__(self , pos, surf, groups):
@@ -10,16 +11,25 @@ class SoilTile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
         self.z = LAYERS['soil']
 
+class WaterTile(pygame.sprite.Sprite):
+    def __init__(self, pos, surf, groups):
+        super().__init__(groups)
+        self.image = surf
+        self.rect = self.image.get_rect(topleft = pos)
+        self.z = LAYERS['soil water']
+
 class SoilLayer:
     def __init__(self, allSprites):
         # sprite groups
         self.allSprites = allSprites
         self.soilSprites = pygame.sprite.Group()
-        
+        self.waterSprites = pygame.sprite.Group()
 
         # graphics
         self.soilSurface = pygame.image.load('../graphics/soil/o.png')
         self.soilSurfaces = importFolderDictionary('../graphics/soil/')
+        # self.waterSurface = pygame.image.load('../graphics/soil_water/')
+        self.waterSurface = importFolder('../graphics/soil_water')
 
         # requirements
         self.createSoilGrid()
@@ -120,4 +130,16 @@ class SoilLayer:
                     # Corrected tile placement
                     SoilTile((TILE_SIZE * col_idx, TILE_SIZE * row_idx), self.soilSurfaces[tileType], [self.allSprites, self.soilSprites])
 
-    
+    def water(self, point):
+        for soilSprite in self.soilSprites.sprites():
+            if soilSprite.rect.collidepoint(point):
+                # print("WATERREERED")
+                # add entry to soil grid
+                x = soilSprite.rect.x // TILE_SIZE
+                y = soilSprite.rect.y // TILE_SIZE
+                self.grid[y][x].append('W')
+
+                # create water sprite
+                surf = choice(self.waterSurface)
+                WaterTile((x * TILE_SIZE,y * TILE_SIZE), surf ,[self.allSprites, self.waterSprites])
+                

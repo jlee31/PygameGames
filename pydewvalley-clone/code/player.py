@@ -234,7 +234,7 @@ class Player(pygame.sprite.Sprite):
                 else:
                     print("Tree not hit - no collision")
         if self.selectedTool == 'water':
-            pass
+            self.soilLayer.water(self.targetPosition)
 
     def useSeed(self):
         debug(self.selectedSeed, 10, 30)
