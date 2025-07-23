@@ -10,14 +10,12 @@ class SoilTile(pygame.sprite.Sprite):
         self.image = surf
         self.rect = self.image.get_rect(topleft = pos)
         self.z = LAYERS['soil']
-
 class WaterTile(pygame.sprite.Sprite):
     def __init__(self, pos, surf, groups):
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_rect(topleft = pos)
         self.z = LAYERS['soil water']
-
 class SoilLayer:
     def __init__(self, allSprites):
         # sprite groups
@@ -72,6 +70,9 @@ class SoilLayer:
                     # print('FARMABLE')
                     self.grid[y][x].append('X') # X means soil Patch
                     self.createSoilTiles()
+                    if self.raining:
+                        self.water_all()
+                
 
     def createSoilTiles(self):
         print("Created a soil tile")
@@ -142,6 +143,13 @@ class SoilLayer:
                 # create water sprite
                 surf = choice(self.waterSurface)
                 WaterTile((x * TILE_SIZE,y * TILE_SIZE), surf ,[self.allSprites, self.waterSprites])
+
+    def water_all(self):
+        for row_idx, row in enumerate(self.grid):
+            for col_idx, cell in enumerate(row):
+                if 'X' in cell and 'W' not in cell:
+                    cell.append('W')
+                    WaterTile((col_idx * TILE_SIZE,row_idx * TILE_SIZE), choice(self.waterSurface) ,[self.allSprites, self.waterSprites])
 
     def removeWater(self):
         # destroy water sprites

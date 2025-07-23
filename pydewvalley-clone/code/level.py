@@ -32,6 +32,7 @@ class Level:
 
 		self.rain = Rain(self.allSprites)
 		self.raining = True
+		self.soilLayer.raining = self.raining
 
 		
 
@@ -94,6 +95,9 @@ class Level:
 
 		# soil
 		self.soilLayer.removeWater()
+
+		# randomizing rain
+		self.soilLayer.raining = self.raining
 
 	def playerAdd(self, item):
 		self.player.itemInventory[item] += 1
