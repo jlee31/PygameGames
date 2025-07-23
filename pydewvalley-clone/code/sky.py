@@ -5,7 +5,6 @@ from sprites import Generic
 from random import randint, choice
 
 # IMPLEMENT RAIN LIKE THIS !!!
-
 class Drop(Generic):
     def __init__(self, surf, pos, moving, groups, z):
         super().__init__(pos, surf, groups, z)

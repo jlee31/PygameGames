@@ -1,14 +1,16 @@
-import pygame 
-from settings import *
-from player import Player
-from overlay import Overlay
-from sprites import Generic, Water, Wildflower, Tree, Interaction
+import pygame
+from random import randint
+
 from pytmx.util_pygame import load_pygame
+
+from overlay import Overlay
+from player import Player
+from settings import *
+from sky import Rain
+from soil import SoilLayer
+from sprites import Generic, Interaction, Tree, Water, Wildflower
 from support import *
 from transition import Transition
-from soil import SoilLayer
-from sky import Rain
-from random import randint
 
 class Level:
 	def __init__(self):

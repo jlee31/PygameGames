@@ -73,7 +73,6 @@ class SoilLayer:
                     if self.raining:
                         self.water_all()
                 
-
     def createSoilTiles(self):
         print("Created a soil tile")
         self.soilSprites.empty() # getting rid of existing soil tiles
