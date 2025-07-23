@@ -26,7 +26,8 @@ while True:
     else:
         screen.blit(mask.to_surface(unsetcolor=(0,0,0,0), setcolor=(0,0,0,255)), img1Loc)
         screen.blit(mask2.to_surface(unsetcolor=(0,0,0,0), setcolor=(0,0,0,255)), (mx - img2.width // 2, my - img2.height // 2))
-        
+        overlapMask = mask.overlap_mask(mask2, ((mx - img2.width // 2) - img1Loc[0], (my - img2.height // 2) - img1Loc[1]))
+        screen.blit(overlapMask.to_surface(unsetcolor=(0,0,0,0), setcolor=(255,0,0,255)), img1Loc)
 
 
     # Events
