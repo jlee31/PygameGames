@@ -7,6 +7,7 @@ from pytmx.util_pygame import load_pygame
 from support import *
 from transition import Transition
 from soil import SoilLayer
+from sky import Rain
 
 class Level:
 	def __init__(self):
@@ -26,6 +27,11 @@ class Level:
 		self.Overlay = Overlay(self.player)
 
 		# missing transition??
+
+		# Sky Stuff
+
+		self.rain = Rain(self.allSprites)
+		self.raining = True
 
 		
 
@@ -98,8 +104,14 @@ class Level:
 		self.allSprites.customDraw(self.player)
 		self.allSprites.update(dt)
 
+
 		self.Overlay.display()
 
+		# Rain Stuff
+		if self.raining:
+			self.rain.update()
+
+		# Transition Overlay
 		if self.player.sleep:
 			self.transition.play()
 
