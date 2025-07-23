@@ -28,9 +28,16 @@ while True:
         screen.blit(mask2.to_surface(unsetcolor=(0,0,0,0), setcolor=(0,0,0,255)), (mx - img2.width // 2, my - img2.height // 2))
         overlapMask = mask.overlap_mask(mask2, ((mx - img2.width // 2) - img1Loc[0], (my - img2.height // 2) - img1Loc[1]))
         screen.blit(overlapMask.to_surface(unsetcolor=(0,0,0,0), setcolor=(255,0,0,255)), img1Loc)
-
-
-    # Events
+        OFFSET = ((mx - img2.width // 2) - img1Loc[0], (my - img2.height // 2) - img1Loc[1])
+        overlapMask = mask.overlap_mask(mask2, OFFSET)
+        overlapCentroid = overlapMask.centroid()
+        if overlapCentroid:
+            pos = (overlapCentroid[0] + img1Loc[0], overlapCentroid[1] + img1Loc[1])
+            pygame.draw.circle(screen, (0, 200, 255), pos, 10, 3)
+            pygame.draw.circle(screen, (0, 200, 255), pos, 3)
+        print(overlapMask.count(), mask.overlap_area(mask2, OFFSET), mask.overlap(mask, OFFSET))
+ 
+ # Events
     for event in pygame.event.get():
         if event.type == KEYDOWN:
             if event.key == K_m:
