@@ -1,0 +1,10 @@
+# pip install pyinstaller 
+Using: https://www.youtube.com/watch?v=lTxaran0Cig (DafluffyPotato)
+Using: https://www.youtube.com/watch?v=2X9rxzZbYqg (Coding With Russ)
+Using: Code from "monkeyvscoconut"
+
+SCRIPT: USE IN THE TERMINAL / Command Prompt
+
+pyinstaller monkeyvscoconut.py --onefile 
+
+
