@@ -42,13 +42,16 @@ class Plant(pygame.sprite.Sprite):
     def grow(self):
         if self.checkIfWatered(self.rect.center):
             self.age += self.growSpeed
+            # Cap the age at maxAge
+            if self.age > self.maxAge:
+                self.age = self.maxAge
+            print(f"Plant growing: {self.plantType}, age: {self.age:.2f}, maxAge: {self.maxAge}")
 
             if int(self.age) > 0:
                 self.z = LAYERS['main']
                 self.hitbox = self.rect.copy().inflate(-26,-self.rect.height * 0.4)
 
             if self.age >= self.maxAge:
-                self.age = self.maxAge
                 self.harvestable = True
             
             self.image = self.frames[int(self.age)]
@@ -204,9 +207,11 @@ class SoilLayer:
         y = pos[1] // TILE_SIZE
         cell = self.grid[y][x]
         is_watered = 'W' in cell
+        print(f"Checking if watered at {pos}: {is_watered} (cell: {cell})")
         return is_watered
 
     def plantSeed(self, targetPos, seed):
+        print(f"plantSeed called with targetPos: {targetPos}, seed: {seed}")
         for soilSprite in self.soilSprites.sprites():
             if soilSprite.rect.collidepoint(targetPos):
                 x = soilSprite.rect.x // TILE_SIZE
@@ -223,8 +228,16 @@ class SoilLayer:
                         soil=soilSprite,
                         checkIfWatered=self.checkIfWatered
                     )
+                    print(f"Plant created! Total plants: {len(self.plantSprites.sprites())}")
+                    print(f"New plant age: 0, maxAge: {len(importFolder(f'../graphics/fruit/{seed}')) - 1}")
+                else:
+                    print("Soil already has a plant!")
+            else:
+                print(f"Soil not found at targetPos: {targetPos}")
+        print(f"No soil found at targetPos: {targetPos}")
 
     def updatePlants(self):
+        print(f"Updating {len(self.plantSprites.sprites())} plants")
         for plant in self.plantSprites.sprites():
             plant.grow()
 

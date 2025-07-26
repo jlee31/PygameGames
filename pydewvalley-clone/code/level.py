@@ -96,6 +96,9 @@ class Level:
 				apple.kill()
 			tree.createApple()
 
+		# plants
+		self.soilLayer.updatePlants( )
+
 		# soil
 		self.soilLayer.removeWater()
 		self.raining = randint(0, 10) > 3
