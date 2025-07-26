@@ -108,6 +108,10 @@ class Level:
 		if self.raining:
 			self.soilLayer.water_all()
 
+		# Sky
+
+		self.sky.startColour = [255,255,255]
+
 	def playerAdd(self, item):
 		self.player.itemInventory[item] += 1
 
