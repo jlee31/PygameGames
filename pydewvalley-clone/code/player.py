@@ -131,7 +131,7 @@ class Player(pygame.sprite.Sprite):
                 self.timers['seed use'].activate()
                 self.direction = pygame.math.Vector2()
                 self.frameIndex = 0
-                print("planting seed?")
+                debug("planting seed is True", 20, 20)
 
             # Change Seed
 
@@ -239,7 +239,7 @@ class Player(pygame.sprite.Sprite):
 
     def useSeed(self):
         debug(self.selectedSeed, 10, 30)
-        self.soilLayer.plant_seed(self.targetPosition, self.selectedSeed)
+        self.soilLayer.plantSeed(self.targetPosition, self.selectedSeed)
 
     def update(self, dt):
         self.input()

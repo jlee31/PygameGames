@@ -25,7 +25,7 @@ class Level:
 		self.interactionSprites = pygame.sprite.Group()
 
 
-		self.soilLayer = SoilLayer(self.allSprites)
+		self.soilLayer = SoilLayer(self.allSprites, self.collisionSprites)
 		self.setup()
 		self.Overlay = Overlay(self.player)
 
@@ -114,6 +114,8 @@ class Level:
 		self.allSprites.customDraw(self.player)
 		self.allSprites.update(dt)
 
+		# Update soil layer (for plant growth)
+		self.soilLayer.updatePlants()
 
 		self.Overlay.display()
 
@@ -143,12 +145,12 @@ class CameraGroup(pygame.sprite.Group):
 					offsetRect.center -= self.offset
 					self.displaySurface.blit(sprite.image, offsetRect)
 
-				# analytics
-				# if sprite == player:
-				# 	pygame.draw.rect(self.displaySurface, 'red', offsetRect, 5)
-				# 	hitboxRect = offsetRect.copy()
-				# 	hitboxRect.center = offsetRect.center
-				# 	pygame.draw.rect(self.displaySurface, 'green', hitboxRect, 5)
-				# 	targetPos = offsetRect.center + PLAYER_TOOL_OFFSET[player.status.split('_')[0]]
-				# 	pygame.draw.circle(self.displaySurface, 'blue', targetPos, 5)
-					
+				# anaytics
+				if sprite == player:
+					pygame.draw.rect(self.displaySurface,'red',offsetRect,5)						
+					hitbox_rect = player.hitbox.copy()
+					hitbox_rect.center = offsetRect.center
+					pygame.draw.rect(self.displaySurface,'green',hitbox_rect,5)
+					target_pos = offsetRect.center + PLAYER_TOOL_OFFSET[player.status.split('_')[0]]
+					pygame.draw.circle(self.displaySurface,'blue',target_pos,5)
+				
