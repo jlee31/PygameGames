@@ -8,7 +8,7 @@ from player import Player
 from settings import *
 from sky import Rain
 from soil import SoilLayer
-from sprites import Generic, Interaction, Tree, Water, Wildflower
+from sprites import Generic, Interaction, Tree, Water, Wildflower, Particle
 from support import *
 from transition import Transition
 
@@ -113,6 +113,9 @@ class Level:
 				if plant.harvestable and plant.rect.colliderect(self.player.hitbox):
 					plant.kill()
 					print("PLANT COLLECTED")
+					self.playerAdd(plant.plantType)
+					Particle(plant.rect.topleft, plant.image, self.allSprites, LAYERS['main'])
+					self.soilLayer.grid[plant.rect.centery // TILE_SIZE][plant.rect.centerx // TILE_SIZE].remove('P')
 
 	def run(self, dt): 
 		self.display_surface.fill('black')
