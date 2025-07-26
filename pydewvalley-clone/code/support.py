@@ -5,6 +5,8 @@ def importFolder(path):
     surfaceList = []
 
     for folder,subfolder,imgFiles in walk(path):
+        # Sort files numerically to ensure correct frame order
+        imgFiles = sorted(imgFiles, key=lambda x: int(x.split('.')[0]))
         for image in imgFiles:
             # path + image to get full path
             fullPath = path + '/' + image 

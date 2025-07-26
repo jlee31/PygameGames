@@ -37,10 +37,6 @@ class Level:
 		self.raining = randint(0, 10) > 3
 		self.soilLayer.raining = self.raining
 
-		
-
-
-
 	def setup(self):
 		# setting up actual map
 		tmxData = load_pygame('../data/map.tmx')
@@ -111,11 +107,21 @@ class Level:
 	def playerAdd(self, item):
 		self.player.itemInventory[item] += 1
 
-	def run(self,dt): 
+	def plantCollision(self):
+		if self.soilLayer.plantSprites:
+			for plant in self.soilLayer.plantSprites.sprites():
+				if plant.harvestable and plant.rect.colliderect(self.player.hitbox):
+					plant.kill()
+					print("PLANT COLLECTED")
+
+	def run(self, dt): 
 		self.display_surface.fill('black')
 		# self.allSprites.draw(self.display_surface)
 		self.allSprites.customDraw(self.player)
 		self.allSprites.update(dt)
+
+		# plant collision
+		self.plantCollision()
 
 		# Update soil layer (for plant growth)
 		self.soilLayer.updatePlants()

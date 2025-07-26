@@ -33,6 +33,12 @@ class Plant(pygame.sprite.Sprite):
         self.growSpeed = GROW_SPEED[plant_type]
         self.harvestable = False
 
+        # Debug: Print frame info
+        print(f"Plant created: {plant_type}")
+        print(f"Number of frames: {len(self.frames)}")
+        print(f"Max age: {self.maxAge}")
+        print(f"Grow speed: {self.growSpeed}")
+
         # self.spritesetup
         self.image = self.frames[self.age]
         self.yOffSet = -16 if plant_type == 'corn' else -8
@@ -46,6 +52,7 @@ class Plant(pygame.sprite.Sprite):
             if self.age > self.maxAge:
                 self.age = self.maxAge
             print(f"Plant growing: {self.plantType}, age: {self.age:.2f}, maxAge: {self.maxAge}")
+            print(f"Using frame index: {int(self.age)} out of {len(self.frames)} frames")
 
             if int(self.age) > 0:
                 self.z = LAYERS['main']
@@ -237,7 +244,6 @@ class SoilLayer:
         print(f"No soil found at targetPos: {targetPos}")
 
     def updatePlants(self):
-        print(f"Updating {len(self.plantSprites.sprites())} plants")
         for plant in self.plantSprites.sprites():
             plant.grow()
 
