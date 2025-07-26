@@ -29,8 +29,7 @@ class Drop(Generic):
 
         # timer
         if pygame.time.get_ticks() - self.startTime >= self.lifetime:
-            self.kill()
-            
+            self.kill() 
 class Rain:
     def __init__(self, allSprites):
         self.allSprites = allSprites
@@ -46,3 +45,18 @@ class Rain:
     def update(self):
         self.createFloor()
         self.createDrops()
+
+class Sky:
+    def __init__(self):
+        self.displaySurface = pygame.display.get_surface()
+        self.fullSurface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.startColour = [255,255,255]
+        self.endColour = [38, 101, 189]
+
+    def display(self, dt):
+        for index, value in enumerate(self.endColour):
+            if self.startColour[index] > value:
+                self.startColour[index] -= 2 * dt
+
+        self.fullSurface.fill(self.startColour)
+        self.displaySurface.blit(self.fullSurface, (0,0), special_flags=pygame.BLEND_RGB_MULT)

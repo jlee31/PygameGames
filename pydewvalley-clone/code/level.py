@@ -6,7 +6,7 @@ from pytmx.util_pygame import load_pygame
 from overlay import Overlay
 from player import Player
 from settings import *
-from sky import Rain
+from sky import Rain, Sky
 from soil import SoilLayer
 from sprites import Generic, Interaction, Tree, Water, Wildflower, Particle
 from support import *
@@ -32,10 +32,14 @@ class Level:
 		# missing transition??
 
 		# Sky Stuff
-
+			# Rain
 		self.rain = Rain(self.allSprites)
 		self.raining = randint(0, 10) > 3
 		self.soilLayer.raining = self.raining
+			# Sky
+		self.sky = Sky()
+
+
 
 	def setup(self):
 		# setting up actual map
@@ -134,6 +138,9 @@ class Level:
 		# Rain Stuff
 		if self.raining:
 			self.rain.update()
+
+		# Daytime
+		self.sky.display(dt)
 
 		# Transition Overlay
 		if self.player.sleep:
