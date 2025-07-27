@@ -71,10 +71,14 @@ class Menu:
             if keys[pygame.K_UP]:
                 self.index -= 1
                 self.timer.activate()
+                if self.index < 0:
+                    self.index = len(self.options) - 1
                 
             if keys[pygame.K_DOWN]:
                 self.index += 1
                 self.timer.activate()
+                if self.index >  len(self.options) - 1:
+                    self.index = 0
 
     def displayMoney(self):
         textSurf = self.font.render(f'${self.player.money}', False, 'Black')
