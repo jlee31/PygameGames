@@ -5,7 +5,7 @@ from debug import debug
 from myTimer import Timer
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group, collisionSprites, treeSprites, interaction, soilLayer):
+    def __init__(self, pos, group, collisionSprites, treeSprites, interaction, soilLayer, toggleShop):
         super().__init__(group);
 
         self.importAssets()
@@ -28,7 +28,7 @@ class Player(pygame.sprite.Sprite):
         # Movement Attributes
         self.direction = pygame.math.Vector2()
         self.position = pygame.math.Vector2(self.rect.center)
-        self.speed = 200;  
+        self.speed = 500;  
 
         # Collisions
 
@@ -64,11 +64,20 @@ class Player(pygame.sprite.Sprite):
             'seed switch': Timer(200)
         }
 
+        # seed inventory
+
+        self.seedInventory = {
+            'corn' : 5,
+            'tomato' : 5,
+        }
+        self.money = 200
+
         # interactions
         self.treeSprites = treeSprites
         self.interaction = interaction
         self.sleep = False
         self.soilLayer = soilLayer
+        self.toggleShop = toggleShop
 
     def getTargetPosition(self):
         self.targetPosition = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
@@ -146,10 +155,12 @@ class Player(pygame.sprite.Sprite):
                 collidedInteractionSprite = pygame.sprite.spritecollide(sprite=self, group=self.interaction, dokill=False)
                 if collidedInteractionSprite:
                     if collidedInteractionSprite[0].name == 'Trader':
-                        pass
+                        self.toggleShop()
                     else: 
                         self.sleep = True
                         self.status = 'left_idle'
+
+            
 
     def getStatus(self):
         # if player is idle, add idle to status
@@ -238,8 +249,12 @@ class Player(pygame.sprite.Sprite):
             self.soilLayer.water(self.targetPosition)
 
     def useSeed(self):
+
         debug(self.selectedSeed, 10, 30)
-        self.soilLayer.plantSeed(self.targetPosition, self.selectedSeed)
+
+        if self.seedInventrory[self.selectedSeed] >= 1:
+            self.soilLayer.plantSeed(self.targetPosition, self.selectedSeed)
+            self.seedInventrory[self.selectedSeed] -= 1
 
     def update(self, dt):
         self.input()
