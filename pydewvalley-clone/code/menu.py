@@ -56,6 +56,9 @@ class Menu:
         self.boundingBox = pygame.Rect(left=self.menuSide, top=self.menuTop, width=self.width, height=self.totalHeight)
         self.boundbox2 = pygame.Rect(440, 188,self.width, self.totalHeight)
 
+        # buying / selling text
+        self.buyText = self.font.render('buy', False, 'Black')
+        self.sellText = self.font.render('sell', False, 'Black')
 
         print(f"Setup - final totalHeight: {self.totalHeight}")
         print(f"Setup - boundingBox: {self.boundbox2}")
@@ -79,6 +82,21 @@ class Menu:
                 self.timer.activate()
                 if self.index >  len(self.options) - 1:
                     self.index = 0
+            
+            if keys[pygame.K_SPACE]:
+                self.timer.activate()
+                currentItem = self.options[self.index]
+                
+                if self.index <= self.sellBorder: # sell
+                    if self.player.itemInventory[currentItem] > 0:
+                        self.player.itemInventory[currentItem] -= 1
+                        self.player.money += SALE_PRICES[currentItem]
+
+                else: # buy
+                    seedPrice = PURCHASE_PRICES[currentItem]
+                    if self.player.money >= seedPrice:
+                        self.player.seedInventory[currentItem] += 1
+                        self.player.money -= PURCHASE_PRICES[currentItem]
 
     def displayMoney(self):
         textSurf = self.font.render(f'${self.player.money}', False, 'Black')
@@ -103,7 +121,12 @@ class Menu:
         # selected
         if selected:
             pygame.draw.rect(self.displaySurface, 'black', bgRect, 4, 4)
-        
+            if self.index <= self.sellBorder: # sell
+                sell_rect = self.sellText.get_rect(midleft = (self.boundbox2.left + 150, bgRect.centery))
+                self.displaySurface.blit(self.sellText, sell_rect)
+            else: # buy
+                buy_rect = self.sellText.get_rect(midleft = (self.boundbox2.left + 150, bgRect.centery))   
+                self.displaySurface.blit(self.buyText, buy_rect)
 
     def update(self):
         self.input()
@@ -116,7 +139,7 @@ class Menu:
             top = self.boundbox2.top + textIndex * (textSurface.get_height() + self.padding * 2 + self.space)
             amount = amountList[textIndex]
             self.showEntry(textSurface, amount, top, self.index == textIndex)
-            print(self.index)
+            # print(self.index)
 
             # self.displaySurface.blit(textSurface, (100, index * 50))
              

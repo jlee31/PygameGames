@@ -252,9 +252,9 @@ class Player(pygame.sprite.Sprite):
 
         debug(self.selectedSeed, 10, 30)
 
-        if self.seedInventrory[self.selectedSeed] >= 1:
+        if self.seedInventory[self.selectedSeed] >= 1:
             self.soilLayer.plantSeed(self.targetPosition, self.selectedSeed)
-            self.seedInventrory[self.selectedSeed] -= 1
+            self.seedInventory[self.selectedSeed] -= 1
 
     def update(self, dt):
         self.input()
