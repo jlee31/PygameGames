@@ -44,7 +44,12 @@ class Level:
 		self.menu = Menu(self.player, self.toggleShop)
 		self.shopActive = False
 
-
+		# Music
+		self.success = pygame.mixer.Sound('../audio/success.wav')
+		self.success.set_volume(0.3)
+		self.bgMusic = pygame.mixer.Sound('../audio/music.mp3')
+		self.bgMusic.set_volume(0.2)
+		self.bgMusic.play(loops=-1)
 
 	def setup(self):
 		# setting up actual map
@@ -111,7 +116,7 @@ class Level:
 
 		# soil
 		self.soilLayer.removeWater()
-		self.raining = randint(0, 10) > 3
+		self.raining = randint(0, 10) > 8 
 
 		# randomizing rain
 		self.soilLayer.raining = self.raining
@@ -124,6 +129,9 @@ class Level:
 
 	def playerAdd(self, item):
 		self.player.itemInventory[item] += 1
+
+		# sound
+		self.success.play()
 
 	def toggleShop(self):
 		self.shopActive = not self.shopActive
@@ -169,10 +177,6 @@ class Level:
 		# Transition Overlay
 		if self.player.sleep:
 			self.transition.play()
-
-
-
-
 class CameraGroup(pygame.sprite.Group):
 	def __init__(self):
 		super().__init__()

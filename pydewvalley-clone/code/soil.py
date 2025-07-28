@@ -81,11 +81,13 @@ class SoilLayer:
         # requirements
         self.createSoilGrid()
         self.createHitRects()
-        # checking if the area is farmable
+        
+         # sounds
+        self.hoeSound = pygame.mixer.Sound('../audio/hoe.wav')
+        self.hoeSound.set_volume(0.05)
 
-        # checking if the soil is watered
-
-        # checking if the soil has a plant
+        self.plantSound = pygame.mixer.Sound('../audio/plant.wav')
+        self.plantSound.set_volume(0.2)
 
     def createSoilGrid(self):
         ground = pygame.image.load('../graphics/world/ground.png')
@@ -121,6 +123,9 @@ class SoilLayer:
                     self.createSoilTiles()
                     if self.raining:
                         self.water_all()
+            
+                # Sound
+                self.hoeSound.play()
                 
     def createSoilTiles(self):
         print("Created a soil tile")
@@ -221,6 +226,10 @@ class SoilLayer:
         print(f"plantSeed called with targetPos: {targetPos}, seed: {seed}")
         for soilSprite in self.soilSprites.sprites():
             if soilSprite.rect.collidepoint(targetPos):
+                # sound
+                self.plantSound.play()
+
+                # code
                 x = soilSprite.rect.x // TILE_SIZE
                 y = soilSprite.rect.y // TILE_SIZE
                 print("PLANTING SEED 1")

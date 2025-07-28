@@ -79,6 +79,11 @@ class Player(pygame.sprite.Sprite):
         self.soilLayer = soilLayer
         self.toggleShop = toggleShop
 
+        # sound
+        self.watering = pygame.mixer.Sound('../audio/water.mp3')
+        self.watering.set_volume(0.1)
+        
+
     def getTargetPosition(self):
         self.targetPosition = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
     
@@ -247,6 +252,9 @@ class Player(pygame.sprite.Sprite):
                     print("Tree not hit - no collision")
         if self.selectedTool == 'water':
             self.soilLayer.water(self.targetPosition)
+
+            # sound
+            self.watering.play()
 
     def useSeed(self):
 

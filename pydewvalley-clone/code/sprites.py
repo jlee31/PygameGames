@@ -61,6 +61,9 @@ class Tree(Generic):
         self.createApple()
 
         self.playerAdd = playerAdd
+
+        # sounds
+        self.axeSound = pygame.mixer.Sound('../audio/axe.mp3')
     
     def createApple(self):
         for pos in self.applePos:
@@ -73,6 +76,11 @@ class Tree(Generic):
     def damage(self):
         # hit the tree
         self.health -= 1
+
+        # play sound
+        self.axeSound.play()
+
+        # debug 
         print(f"Tree damaged! Health: {self.health}, Apples: {len(self.appleSprites.sprites())}")
 
         # remove an apple
@@ -100,7 +108,6 @@ class Tree(Generic):
         
     def update(self, dt):
         if self.alive: self.checkDeath()
-
 class Particle(Generic):
     def __init__(self, pos, surf, groups, z, duration = 200):
         super().__init__(pos, surf, groups, z)
